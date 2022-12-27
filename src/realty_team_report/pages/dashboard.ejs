@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    <%= username %> | Dashboard
+  </title>
+
+  <link rel="stylesheet" href="/css/buttons.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/pico.dashboard.css">
+  <% if (admin) { %>
+  <link rel="stylesheet" href="/css/admin.css">
+  <% } else { %>
+  <link rel="stylesheet" href="/css/user.css">
+  <% }
+   %>
+
+  <!-- This will add arrows only -->
+  <link href="https://cdn.jsdelivr.net/gh/tofsjonas/sortable/sortable-base.min.css" rel="stylesheet" />
+</head>
+
+<body>
+
+  <div id="notification-box" class="hide"></div>
+
+  <h1 class="title">
+    <span>Hii <%= username %></span>
+    <button type="button" id="view-switcher" class="preventTextSelection">STATS</button>
+  </h1>
+
+  <p id="info"><mark>REPORTS</mark></p>
+
+  <div id="search-box">
+    <input type="search" name="search" placeholder="Search" tabindex="0" accesskey="/">
+  </div>
+
+  <span id="pages" class="container">
+    <div id="stats">
+      <select name="showSTATS" class="preventTextSelection">
+        <option value="daily">daily</option>
+        <option value="weekly" selected>weekly</option>
+        <option value="monthly">monthly</option>
+        <option value="quarterly">quarterly</option>
+        <option value="half_yearly">half yearly</option>
+        <option value="yearly">yearly</option>
+      </select>
+      <div id="daily"></div>
+      <div id="weekly"></div>
+      <div id="monthly"></div>
+      <div id="quarterly"></div>
+      <div id="half_yearly"></div>
+      <div id="yearly"></div>
+    </div>
+    <table id="pending" class="container sortable"></table>
+    <table id="reject" class="container sortable"></table>
+    <% if (!admin) { %>
+    <form id="form" action="#">
+      <label for="visits">No. of visits</label>
+      <input type="number" name="visits" placeholder="VISITS" required>
+      <label for="bookings">No. of Bookings</label>
+      <input type="number" name="bookings" placeholder="BOOKINGS" required>
+      <label for="value">Value in CR.</label>
+      <input type="number" name="value" placeholder="VALUE (CR.)" step="0.01" required>
+      <p></p>
+      <button class="preventTextSelection">SUBMIT</button>
+    </form>
+    <% } %>
+  </span>
+
+  <!-- external lib -->
+  <!-- <script src="../lib/basket.full.min.js"></script> -->
+  <!-- <script src="https://cdn.jsdelivr.net/gh/tofsjonas/sortable/sortable.min.js"></script> -->
+  <script src="/js/sortable2.min.js"></script>
+  <!-- <script>
+    let co = {
+      h: <% if(admin) { %> true <%} else{ %> false <%} %>
+    }
+  </script> -->
+  <!-- cookies -->
+  <!-- <script src="../js/CookieJS.js"></script> -->
+  <!-- lib -->
+  <!-- <script src="../js/utils.js"></script> -->
+  <%- include('../partials/JS_utils.ejs'); -%>
+  <%- include('../partials/JS_calendar.ejs'); -%>
+  <%- include('../partials/JS_dashboard.ejs'); -%>
+  <% if(!admin){%>
+  <script>
+    function FormHandler(e) {
+      e.preventDefault()
+      _$("#form button").disabled = true
+
+      makeRequest("POST", "/form", {
+          username: `<%=username%>`,
+          visits: _$("#form [name='visits']").value,
+          bookings: _$("#form [name='bookings']").value,
+          value: _$("#form [name='value']").value
+        })
+        .then(response => {
+
+          response = JSON.parse(response)
+          let now = new Date()
+
+          notification("Report Submitted.")
+
+          addStat({
+            "ID": response.newID,
+            "DATE": now.getDate(),
+            "MONTH": now.getMonth() + 1,
+            "YEAR": now.getFullYear(),
+            "STAFF NAME": `<%=username%>`,
+            "VISITS": _$("#form [name='visits']").value,
+            "BOOKINGS": _$("#form [name='bookings']").value,
+            "VALUE (CR.)": _$("#form [name='value']").value,
+            "STATUS": 0,
+          })
+
+          _$("#form").reset()
+
+          setTimeout(() => _$("#form button").disabled = false, 1000);
+        })
+    }
+    _$("#form").onsubmit = FormHandler
+  </script>
+  <%} %>
+
+  <script>
+    // setTimeout(() => {
+    //   window.location.reload()
+    // }, 9000);
+  </script>
+  <!-- <script src="../js/calender.js"></script> -->
+  <!-- <script src="../js/tablesort.js"></script> -->
+  <!-- <script src="../js/dashboard vA.js"></script> -->
+  <!-- main -->
+  <!-- <script src="../js/admin.js"></script> -->
+</body>
+
+</html>
+
+<!-- <details>
+  <summary></summary>
+  <table>
+    <thead>
+      <tr>
+        <td>NAME</td>
+        <td>VISITS</td>
+        <td>BOOKINGS</td>
+        <td>VALUE (CR.)</td>
+        <td>TARGET</td>
+      </tr>
+    </thead>
+  </table>
+</details> -->
+<!-- <tr>
+   <td colspan="5">
+     <table data-clickable-id="${id}" onclick="" class="preventTextSelection">
+       <tr>
+         <td colspan="5">&nbsp;${summary}</td>
+       </tr>
+       ${TableBody(id, data)}
+     </table>
+   </td>
+ </tr> -->

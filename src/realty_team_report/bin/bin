@@ -1,0 +1,20 @@
+ // get meta data about spread sheet
+    // const metaData = await instance_of_google_sheet_api.spreadsheets.get({ auth, spreadsheetId })
+    // read
+    // await instance_of_google_sheet_api.spreadsheets.values.get({
+    //     auth,
+    //     spreadsheetId,
+    //     range: "Data"
+    // })
+    //     .then(response => response.data)
+    //     .then(values => {
+    //         console.log(typeof values, values)
+    //     })
+    // write
+    // await instance_of_google_sheet_api.spreadsheets.values.
+    // res.send(data.data)
+    // next()
+    // console.log(await data)
+    // console.log(
+    //     typeof parseInt(((await getRange("CONST!B1"))[0])[0])
+    // )

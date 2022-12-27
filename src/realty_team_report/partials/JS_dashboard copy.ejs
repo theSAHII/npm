@@ -1,0 +1,279 @@
+<script>
+  let currentViewNo = 1
+  const TableHead = `
+      <thead>
+        <% if (admin) { %><th>NAME</th><% }%>
+        <th>VISITS</th>
+        <th>BOOKINGS</th>
+        <th>VALUE (CR.)</th>
+        <th>TARGET</th>
+      </thead>`,
+    TableStatusHead = `
+      <thead>
+        <th>DATE</th>
+        <% if (admin) { %><th>NAME</th><% }%>
+        <th>VISITS</th>
+        <th>BOOKINGS</th>
+        <th>VALUE (CR.)</th>
+        <th>TARGET</th>
+      </thead>`,
+    TableBody = (id, data) => `
+      <tr data-parent-id="${id}" data-id="${data[" STAFF NAME"]}" class="hide">
+        <% if (admin) { %><td>${data["STAFF NAME"]}</td><% }%>
+        <td>${data["VISITS"]}</td>
+        <td>${data["BOOKINGS"]}</td>
+        <td>${data["VALUE (CR.)"]}</td>
+        <td></td>
+      </tr>`,
+    NestedTable = (id, summary, data) => `
+      <tr>
+        <td colspan="5">
+          <table data-clickable-id="${id}" onclick="" class="preventTextSelection">
+            <tr>
+              <td colspan="5">&nbsp;${summary}</td>
+            </tr>
+            ${TableBody(id, data)}
+          </table>
+        </td>
+      </tr>`,
+    TableStatus = (btns, data) => `
+      <tr data-id="${data[" ID"]}" data-date="${data.YEAR}/${data.MONTH}/${data.DATE}" class="">
+        <td class="date" data-sort="${data.YEAR}${data.MONTH}${data.DATE}">${data.DATE}/${data.MONTH}/${data.YEAR}</td>
+        <td class="name">${data["STAFF NAME"]}</td>
+        <td class="visits">${data["VISITS"]}</td>
+        <td class="bookings">${data["BOOKINGS"]}</td>
+        <td class="value">${data["VALUE (CR.)"]}</td>
+        <td></td>
+        <td class="btns-container">${btns}</td>
+      </tr>`;
+
+  function addStatValue(selector, data) {
+    let childrens = _$(selector).children;
+    (childrens[1]).innerHTML = parseInt((childrens[1]).innerHTML) + parseInt(data["VISITS"]);
+    (childrens[2]).innerHTML = parseInt((childrens[2]).innerHTML) + parseInt(data["BOOKINGS"]);
+    (childrens[3]).innerHTML = parseInt((childrens[3]).innerHTML) + parseInt(data["VALUE (CR.)"]);
+  }
+
+  async function addStat(data) {
+    let {
+      year,
+      halfYearNo,
+      halfYearName,
+      quarterNo,
+      quarterName,
+      monthNo,
+      monthName,
+      weekNo,
+      weekName,
+      date
+    } = Calender.get.detailInfo.date(data.YEAR, data.MONTH, data.DATE),
+      s = null;
+
+    if (data.STATUS != 1) {
+      let statusType = undefined
+
+      if (data.STATUS == 0) statusType = "pending"
+      else if (status == -1) statusType = "reject"
+
+      // dom.add.status(statusType, data)
+      return
+    }
+
+    // daily
+    let id = `${year}/${monthNo}/${date}`,
+      summary = `${date} ${monthName} ${year}`;
+    s = `#daily [data-clickable-id = "${id}"]`
+    if (_$(s))
+      addHTML(id, TableBody(id, data))
+    else {
+      _$("#daily tbody").innerHTML += NestedTable(id, summary, data)
+    }
+    // end
+
+    function addStatOF(type, id, summary) {
+      let s = `#${type} tbody [data-clickable-id="${id}"]`
+      if (_$(s)) {
+        let staff = `#${type} tbody [data-id="${data["STAFF NAME"]}"]`
+        if (_$(staff)) {
+          addStatValue(`#${type} tbody [data-id="${data["STAFF NAME"]}"]`, data)
+        } else {
+          addHTML(`[data-clickable-id="${id}"]`, TableBody(id, data))
+          console.log(TableBody(id, data))
+        }
+      } else {
+        console.log(typeof NestedTable(id, summary, data))
+        _$(`#${type} tbody`).innerHTML += NestedTable(id, summary, data)
+      }
+      // console.log(
+      //   TableBody(id, data),
+      //   NestedTable(id, summary, data)
+      // )
+    }
+
+    // weekly
+    addStatOF("weekly", `${year}-${monthNo} ${weekNo}`, `${weekName} of &nbsp${monthName} ${year}`)
+    // monthly
+    // addStatOF("monthly", `${year}-${monthNo}`, `${monthName} ${year}`)
+    // quarterly
+    // addStatOF("quarterly", `${year} q-${quarterNo}`, `${quarterName} of &nbsp${year}`)
+    // half-yearly
+    // addStatOF("half_yearly", `${year} hy-${halfYearNo}`, `${halfYearName} of &nbsp${year}`)
+    // yearly
+    // addStatOF("yearly", `${year}`, `${year}`)
+    // end
+  }
+
+  function addStatus(type, data) {
+    let
+      s = "#",
+      btns = `<span class="btn preventTextSelection" type="approve" onclick="_requestFor.update.status(this,1)">${svg.check_square}</span>`
+
+
+    if (type == "pending") {
+      s += "pending"
+      btns += `<span class="btn preventTextSelection" type="reject" onclick="_requestFor.update.status(this,-1)">${svg.cross_square}</span>`
+    } else if (type == "reject") {
+      s += "reject"
+    }
+    _$(s + " tbody").innerHTML += TableStatus(btns, data)
+  }
+
+  function updateStatus(statusType, e) {
+    let _ = (s) => e.querySelector(s),
+      data = {
+        "ID": e.getAttribute("data-id"),
+        "DATE": parseInt((e.getAttribute("data-date").split("/"))[2]),
+        "MONTH": parseInt((e.getAttribute("data-date").split("/"))[1]),
+        "YEAR": parseInt((e.getAttribute("data-date").split("/"))[0]),
+        "STAFF NAME": _(".name").innerText,
+        "VISITS": _(".visits").innerText,
+        "BOOKINGS": _(".bookings").innerText,
+        "VALUE (CR.)": _(".value").innerText,
+        "STATUS": statusType,
+      }
+    if (statusType == 1) {
+      addStat(data)
+      e.remove()
+    } else if (statusType == -1) {
+      addStatus("reject", data)
+      e.remove()
+    }
+  }
+
+  function showStat() {
+    let e_showSTATS = _$("[name='showSTATS']");
+    (Object.values(_$("#stats").children)).forEach(child => {
+      if (child.tagName == "TABLE")
+        hideNODES([child])
+    })
+    showIDS([`#${e_showSTATS.value}`])
+  }
+
+  function updateViewState() {
+    // hide all
+    hideIDS(["#stats", "#reject", "#pending"])
+
+    if (currentViewNo === 0) {
+      currentViewNo = 1
+      showIDS(["#pending"])
+      setText(["#view-switcher", "#info mark"], ["STATS", "Pending Requests"])
+      return
+    } else if (currentViewNo == 1) {
+      currentViewNo = -1
+      showIDS(["#stats"])
+      setText(["#view-switcher", "#info mark"], ["REJECT", "Reports & Statistics"])
+      return
+    } else {
+      currentViewNo = 0
+      showIDS(["#reject"])
+      setText(["#view-switcher", "#info mark"], ["PENDING", "Rejected Requests"])
+    }
+  }
+
+  function toggleNestedTable(self) {
+    let childrens = self.childrens,
+      state = self.getAttribute("data-state")
+    childrens.shift()
+    if (state === "open")
+      hideNODES(childrens)
+    else
+      showNODES(childrens)
+  }
+
+  function notification(string) {
+    showIDS(["#notification-box"])
+    setText(["#notification-box"], [string])
+    setTimeout(() => hideIDS(["#notification-box"]), 3000);
+  }
+
+  function initSearch(selector) {
+    let searchInput = _$(selector)
+
+    searchInput.addEventListener("keypress", search, false)
+    window.addEventListener("keypress", function(e) {
+      let isSearchInputFocued = document.activeElement === searchInput
+      if (e.key === "/" && !isSearchInputFocued) {
+        searchInput.focus()
+        if (searchInput.value.length <= 0) setTimeout(() => searchInput.value = searchInput.value.slice(0, -1), 5);
+      }
+    }, false);
+  }
+
+  function search(e) {
+    let value = (e.target.value).toLowerCase(),
+      listOfSearchableElements = [
+        ..._$$("[data-clickable-id]"),
+        ..._$$("#pending * [data-id]"),
+        ..._$$("#reject * [data-id]")
+      ],
+      makeAllVisible = false;
+
+    if (value.length < 1) makeAllVisible = true;
+
+    listOfSearchableElements.forEach(function(item) {
+      let context = (item.innerText || item.textContent).toLowerCase();
+
+      if (makeAllVisible) showNODES([item])
+      else if (context.includes(value)) showNODES([item])
+      else hideNODES([item])
+    })
+  }
+
+  function initDashboard() {
+    currentViewNo = parseInt(`<% if (admin) { %>0<% }else{%>0<%}%>`)
+    // username = CookieJS.get("name") || false
+
+    // if (!username) window.location.href = "login.html"
+
+    // Page.setTitle(username + " | DASHBOARD")
+    // Page.var.set("username", username)
+
+    updateViewState()
+    _$("#view-switcher").onclick = updateStatus
+
+    showStat()
+    _$("[name='showSTATS']").onchange = updateViewState();
+
+    // (["daily", "weekly", "monthly", "quarterly", "half_yearly", "yearly"]).forEach(id => {
+    //   _$("#" + id).innerHTML += TableHead + "<tbody></tbody>"
+    // });
+    // (["pending", "reject"]).forEach(id => _$("#" + id).innerHTML += TableStatusHead + "<tbody></tbody>")
+ (["daily", "weekly", "monthly", "quarterly", "half_yearly", "yearly"]).forEach(id => {
+ _$("#" + id).innerHTML += TableHead + "<tbody></tbody>"
+ });
+
+    initSearch("#search-box input")
+
+    makeRequest("GET","/api/admin")
+    .then(response=>{
+      // console.log(response)
+      let o = arr2obj(response)
+      for (const key in o) {
+        addStat(o[key]) 
+        // console.log(key+" : ",o[key])
+        }
+    })
+    // _$("#form").onsubmit = FormHandler
+  }
+  initDashboard()
+</script>

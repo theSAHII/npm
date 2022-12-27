@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+
+  <link type="text/css" rel="stylesheet" href="/css/all_center.css">
+  <link type="text/css" rel="stylesheet" href="/css/buttons.css">
+</head>
+
+<body>
+
+  <button id="loginBtn">LOGIN</button>
+
+  <form action="/validateUser" method="post" style="display:none ;">
+    <input type="text" name="idToken" id="">
+  </form>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyBSPCUyA1HMWTg15U_JVQo659FSZHXNZiU",
+      authDomain: "auth-a6787.firebaseapp.com",
+      projectId: "auth-a6787",
+      storageBucket: "auth-a6787.appspot.com",
+      messagingSenderId: "759579710862",
+      appId: "1:759579710862:web:10194cb5d37f69ed28c0df",
+      measurementId: "G-G2KTG78CZ0"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    // Initialize Firebase Authentication and get a reference to the service
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // signOut(auth)
+
+    function Login() {
+      signInWithPopup(auth, provider)
+        .then((response) => {
+          console.log(response._tokenResponse.idToken)
+
+          document.querySelector("form input").value = response._tokenResponse.idToken
+          document.querySelector("form").submit()
+        })
+    }
+    document.querySelector("#loginBtn").onclick = Login;
+  </script>
+</body>
+
+</html>

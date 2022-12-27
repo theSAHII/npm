@@ -1,0 +1,277 @@
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+h1.title {
+    font-size: 180%;
+}
+
+.hide {
+    display: none !important;
+}
+
+.preventTextSelection {
+    /* Safari */
+    -webkit-user-select: none;
+    /* IE 10 and IE 11 */
+    -ms-user-select: none;
+    /* Standard syntax */
+    user-select: none;
+
+    cursor: pointer;
+}
+
+button:disabled,
+button:hover:disabled {
+    cursor: not-allowed;
+    background-color: #00000030;
+    color: currentColor;
+    pointer-events: none;
+}
+
+/* search box */
+#search-box {
+    margin: 18px;
+    padding: 3px;
+
+    align-self: center;
+
+    border: 1px solid #00000090;
+    border-radius: 3px;
+}
+
+#search-box input[name="search"] {
+    padding: 6px 12px;
+    width: 270px;
+
+    outline: none;
+    border: none;
+}
+
+
+/* dropdownlist */
+select,
+select option {
+    min-width: 100px;
+    min-height: 30px;
+    padding: 6px 12px;
+    align-self: flex-start;
+}
+
+select+button {
+    min-height: 30px;
+}
+
+/* pages */
+#pages {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    overflow: scroll;
+
+    position: relative;
+
+    margin-bottom: 30px;
+}
+
+/* table */
+table {
+    width: 100%;
+    min-width: 600px !important;
+    height: fit-content;
+
+    border-collapse: collapse;
+
+    position: relative;
+
+    /* overflow: scroll; */
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+}
+
+/* tbody {
+    overflow: hidden !important;
+} */
+
+thead::before,
+thead::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-color: currentColor;
+    z-index: 2;
+}
+
+thead::before {
+    top: 0;
+}
+
+thead::after {
+    bottom: 0;
+    translate: 0 -2px;
+}
+
+th,
+td {
+    padding: 0 9px;
+    min-width: 80px;
+    text-align: center;
+    max-height: min-content !important;
+}
+
+th {
+    padding: 6px 0;
+    font-size: small;
+    font-weight: bold;
+}
+
+table * svg {
+    width: 27px;
+    height: 27px;
+    margin: 0 9px;
+    fill: #fff;
+}
+
+table * [type="approve"]:hover svg {
+    background-color: #fff;
+    fill: green;
+}
+
+table * [type="reject"]:hover svg {
+    background-color: #fff;
+    fill: red;
+}
+
+#pending * td:nth-of-type(-n+2),
+#reject * td:nth-of-type(-n+2) {
+    text-align: left;
+}
+
+.btn {
+    position: relative;
+}
+
+
+.btn::before {
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: 12px;
+    width: 21px;
+    height: 21px;
+    z-index: -1 !important;
+}
+
+.btn[type="approve"]:before {
+    background-color: green;
+}
+
+.btn[type="reject"]:before {
+    background-color: red;
+}
+
+.btns-container {
+    display: flex;
+}
+
+/* stats */
+#stats {
+    width: 90% !important;
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 9px;
+    padding: 9px 18px 0px;
+}
+
+#stats * [data-clickable-id] {
+    font-size: small;
+    font-weight: bolder !important;
+
+    background-color: #87ceeb30;
+
+    outline: 1px solid skyblue;
+    outline-offset: -2px;
+}
+
+#stats *[data-clickable-id] td {
+    border: 7px solid transparent;
+    outline: 1px solid #fff;
+    outline-offset: -1px;
+}
+
+#stats * table {
+    border-collapse: separate;
+    border-spacing: 0 12px;
+}
+
+#stats * th,
+#stats * td {
+    width: fit-content;
+    min-width: 100px;
+    text-align: center;
+}
+
+#stats * th {
+    font-weight: bolder;
+}
+
+
+#stats * td:nth-of-type(1) {
+    text-align: left;
+}
+
+#stats * details {
+    min-width: 600px;
+}
+
+/* info */
+#info {
+    width: 96%;
+    align-self: center;
+}
+
+#info mark {
+    font-size: smaller;
+    font-weight: bold;
+    background-color: #87ceeb30 !important;
+    border: 1px solid skyblue;
+    padding: 9px;
+    border-radius: 6px;
+}
+
+
+/* notification-box */
+#notification-box.hide {
+    display: none;
+}
+
+#notification-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    padding: 3px 0;
+
+    background-color: #0e1111;
+    color: #ffe;
+}
+
+/* sortable */
+/* .sortable thead th.indicator-left::before {
+    margin-right: 3px;
+    content: '▸';
+} */
