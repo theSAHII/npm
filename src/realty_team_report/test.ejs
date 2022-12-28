@@ -1,0 +1,11 @@
+<script>
+  const listUpdateViewState = {
+      ids: "#stats,#reject,#pending<% if(!admin){%>,#form<%}%>".split(","),
+        context:"STATS,REJECT,PENDNIG<% if(!admin){%>,FORM<%}%>".split(","),
+        info: "Reports & Statistics,Rejected Requests,Pending Requests<% if(!admin){%>,Form<%}%>".split(",")
+    }
+    console.log(listUpdateViewState)
+    function updateViewState(){
+        
+    }
+</script>

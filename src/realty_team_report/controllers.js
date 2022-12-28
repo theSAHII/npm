@@ -14,6 +14,8 @@ function loginPage(req, res, next) {
 }
 
 function dashboard(req, res, next) {
+
+    if (!req.cookies.token) res.redirect("/")
     let email = cryptr.decrypt(req.cookies.token)
     if (!CONFIG.users[email]) res.redirect("/")
 
@@ -68,10 +70,12 @@ async function getDataForUser(req, res, next) {
     res.json(data).end()
 }
 
-async function updateStatus(req, res, next) {
-    res.json(
-        await setRange(`Data!I${req.body.id}`, [[req.body.status]])
-    ).end()
+function updateStatus(req, res, next) {
+    // console.log(req.body)
+    setRange(`Data!I${req.body.id}`, [[req.body.status]])
+        .then(result => {
+            res.send(result).end()
+        })
 }
 
 async function addData(req, res, next) {

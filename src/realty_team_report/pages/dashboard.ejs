@@ -19,7 +19,9 @@
   <link rel="stylesheet" href="/css/user.css">
   <% }
    %>
-
+  <link rel="stylesheet" href="/css/menu.css">
+  <link rel="stylesheet" href="/css/popup.css">
+  <link rel="stylesheet" href="/css/table.css">
   <!-- This will add arrows only -->
   <link href="https://cdn.jsdelivr.net/gh/tofsjonas/sortable/sortable-base.min.css" rel="stylesheet" />
 </head>
@@ -28,27 +30,71 @@
 
   <div id="notification-box" class="hide"></div>
 
-  <h1 class="title">
-    <span>Hii <%= username %></span>
-    <button type="button" id="view-switcher" class="preventTextSelection">STATS</button>
-  </h1>
+  <h1>Hii <%= username %></h1>
 
-  <p id="info"><mark>REPORTS</mark></p>
+  <!-- Menu elements-->
+  <div class="menu">
+    <span onclick="updateViewState(1)">
+      <span>Reports</span>
+      <small>Reports & Statistics</small>
+    </span>
+    <span onclick="updateViewState(0)">
+      <span>Pending</span>
+      <small>Unapproved Submitted reports</small>
+    </span>
+    <span onclick="updateViewState(-1)">
+      <span>Rejected</span>
+      <small>Rejected reports</small>
+    </span>
+    <% if (!admin) { %>
+    <span onclick="updateViewState(2)">
+      <span>Form</span>
+      <small>Form for report submission</small>
+    </span>
+    <% } %>
+  </div>
+  <div class="menu__toggler"><span></span></div>
+  <!-- menu end -->
+
+  <p id="info" class="box-shadow">REPORTS</p>
 
   <div id="search-box">
     <input type="search" name="search" placeholder="Search" tabindex="0" accesskey="/">
   </div>
 
-  <span id="pages" class="container">
+  <span id="pages" class="">
     <div id="stats">
-      <select name="showSTATS" class="preventTextSelection">
+      <!-- <select name="showSTATS" class="preventTextSelection">
         <option value="daily">daily</option>
         <option value="weekly" selected>weekly</option>
         <option value="monthly">monthly</option>
         <option value="quarterly">quarterly</option>
         <option value="half_yearly">half yearly</option>
         <option value="yearly">yearly</option>
-      </select>
+      </select> -->
+
+      <!-- partial:index.partial.html -->
+      <input type="checkbox" id="toggle">
+      <label for="toggle">
+        Reports :&nbsp;<span class="preventTextSelection box-shadow">Daily</span>
+      </label>
+
+      <dialog>
+        <header>Reports : </header>
+        <p></p>
+        <main>
+          <span class="preventTextSelection outline " onclick="showStat('daily')">Daily</span>
+          <span class="preventTextSelection outline" onclick="showStat('weekly')">Weekly</span>
+          <span class="preventTextSelection outline" onclick="showStat('monthly')">Monthly</span>
+          <span class="preventTextSelection outline" onclick="showStat('quarterly')">Quarterly</span>
+          <span class="preventTextSelection outline" onclick="showStat('half_yearly')">Half-Yearly</span>
+          <span class="preventTextSelection outline" onclick="showStat('yearly')">Yearly</span>
+        </main>
+        <p></p>
+        <label for="toggle" class="preventTextSelection box-shadow">close</label>
+      </dialog>
+      <!-- partial -->
+
       <div id="daily"></div>
       <div id="weekly"></div>
       <div id="monthly"></div>
@@ -56,10 +102,10 @@
       <div id="half_yearly"></div>
       <div id="yearly"></div>
     </div>
-    <table id="pending" class="container sortable"></table>
-    <table id="reject" class="container sortable"></table>
+    <table id="pending" class="sortable"></table>
+    <table id="reject" class="sortable"></table>
     <% if (!admin) { %>
-    <form id="form" action="#">
+    <form id="form" action="/form">
       <label for="visits">No. of visits</label>
       <input type="number" name="visits" placeholder="VISITS" required>
       <label for="bookings">No. of Bookings</label>
@@ -129,6 +175,7 @@
   <%} %>
 
   <script>
+    // notification("hii")
     // setTimeout(() => {
     //   window.location.reload()
     // }, 9000);

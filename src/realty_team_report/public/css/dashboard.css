@@ -3,8 +3,34 @@
     height: 0;
 }
 
-h1.title {
-    font-size: 180%;
+.box-shadow {
+    background-color: #d8bfd8;
+    color: #fff;
+    background-color: #121212;
+    border: 1px solid #121212;
+    box-shadow: 0 0 6px #12121270;
+    padding: 0.5em 1em;
+}
+
+.outline {
+    color: #121212;
+    border: 2px solid #121212;
+    margin: 0.5em;
+    padding: 0.5em 1em;
+}
+
+.outline:hover {
+    background-color: #121212;
+    color: #fff;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow-x: hidden !important;
+    /* overflow: hidden; */
 }
 
 .hide {
@@ -49,111 +75,17 @@ button:hover:disabled {
     border: none;
 }
 
-
-/* dropdownlist */
-select,
-select option {
-    min-width: 100px;
-    min-height: 30px;
-    padding: 6px 12px;
-    align-self: flex-start;
-}
-
-select+button {
-    min-height: 30px;
-}
-
 /* pages */
 #pages {
     width: 100%;
-    height: 100%;
 
     display: flex;
-    overflow: scroll;
 
-    position: relative;
-
-    margin-bottom: 30px;
+    /* position: relative; */
+    padding-bottom: 30px;
 }
 
-/* table */
-table {
-    width: 100%;
-    min-width: 600px !important;
-    height: fit-content;
-
-    border-collapse: collapse;
-
-    position: relative;
-
-    /* overflow: scroll; */
-}
-
-thead {
-    position: sticky;
-    top: 0;
-    background-color: #fff;
-}
-
-/* tbody {
-    overflow: hidden !important;
-} */
-
-thead::before,
-thead::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 1px;
-    background-color: currentColor;
-    z-index: 2;
-}
-
-thead::before {
-    top: 0;
-}
-
-thead::after {
-    bottom: 0;
-    translate: 0 -2px;
-}
-
-th,
-td {
-    padding: 0 9px;
-    min-width: 80px;
-    text-align: center;
-    max-height: min-content !important;
-}
-
-th {
-    padding: 6px 0;
-    font-size: small;
-    font-weight: bold;
-}
-
-table * svg {
-    width: 27px;
-    height: 27px;
-    margin: 0 9px;
-    fill: #fff;
-}
-
-table * [type="approve"]:hover svg {
-    background-color: #fff;
-    fill: green;
-}
-
-table * [type="reject"]:hover svg {
-    background-color: #fff;
-    fill: red;
-}
-
-#pending * td:nth-of-type(-n+2),
-#reject * td:nth-of-type(-n+2) {
-    text-align: left;
-}
-
+/*  */
 .btn {
     position: relative;
 }
@@ -183,8 +115,8 @@ table * [type="reject"]:hover svg {
 
 /* stats */
 #stats {
-    width: 90% !important;
-    height: auto;
+    width: 100% !important;
+    /* height: auto; */
 
     display: flex;
     flex-direction: column;
@@ -193,60 +125,13 @@ table * [type="reject"]:hover svg {
     padding: 9px 18px 0px;
 }
 
-#stats * [data-clickable-id] {
-    font-size: small;
-    font-weight: bolder !important;
-
-    background-color: #87ceeb30;
-
-    outline: 1px solid skyblue;
-    outline-offset: -2px;
-}
-
-#stats *[data-clickable-id] td {
-    border: 7px solid transparent;
-    outline: 1px solid #fff;
-    outline-offset: -1px;
-}
-
-#stats * table {
-    border-collapse: separate;
-    border-spacing: 0 12px;
-}
-
-#stats * th,
-#stats * td {
-    width: fit-content;
-    min-width: 100px;
-    text-align: center;
-}
-
-#stats * th {
-    font-weight: bolder;
-}
-
-
-#stats * td:nth-of-type(1) {
-    text-align: left;
-}
-
-#stats * details {
-    min-width: 600px;
-}
-
 /* info */
 #info {
-    width: 96%;
-    align-self: center;
-}
-
-#info mark {
+    width: 100%;
+    /* align-self: center; */
     font-size: smaller;
     font-weight: bold;
-    background-color: #87ceeb30 !important;
-    border: 1px solid skyblue;
-    padding: 9px;
-    border-radius: 6px;
+    padding: 9px 30px;
 }
 
 
@@ -260,18 +145,12 @@ table * [type="reject"]:hover svg {
     justify-content: center;
     align-items: center;
 
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     min-width: 100%;
-    padding: 3px 0;
+    padding: 9px 0;
 
     background-color: #0e1111;
     color: #ffe;
 }
-
-/* sortable */
-/* .sortable thead th.indicator-left::before {
-    margin-right: 3px;
-    content: '▸';
-} */

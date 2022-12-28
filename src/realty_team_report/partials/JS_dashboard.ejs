@@ -1,4 +1,18 @@
 <script>
+  const toggler = document.querySelector('.menu__toggler');
+  const menu = document.querySelector('.menu');
+
+  /*
+   * Toggles on and off the 'active' class on the menu
+   * and the toggler button.
+   */
+  toggler.addEventListener('click', () => {
+    toggler.classList.toggle('active');
+    menu.classList.toggle('active');
+  })
+</script>
+
+<script>
   let currentViewNo = 1
   const TableHead = `
     <table>
@@ -49,7 +63,7 @@
     TableStatus = (btns, data) => `
       <tr data-id="${data["ID"]}" data-date="${data.YEAR}/${data.MONTH}/${data.DATE}" class="">
         <td class="date" data-sort="${data.YEAR}${data.MONTH}${data.DATE}">${data.DATE}/${data.MONTH}/${data.YEAR}</td>
-        <% if (admin) { %><td>${data["STAFF NAME"]}</td><% }%>
+        <% if (admin) { %><td class="name">${data["STAFF NAME"]}</td><% }%>
         <td class="visits">${data["VISITS"]}</td>
         <td class="bookings">${data["BOOKINGS"]}</td>
         <td class="value">${data["VALUE (CR.)"]}</td>
@@ -152,7 +166,7 @@
     if (type == "pending")
       btns += `<%if(admin){%><span class="btn preventTextSelection" type="approve" onclick="updateStatus(this.parentNode.parentNode,1)">${svg.check_square}</span><span class="btn preventTextSelection" type="reject" onclick="updateStatus(this.parentNode.parentNode,-1)">${svg.cross_square}</span><%}%>`
     else if(type == "reject")
-      btns += `<span class="btn preventTextSelection" type="approve" onclick="updateStatus(this.parentNode.parentNode,0)">${svg.check_square}</span>`
+      btns += `<span class="btn preventTextSelection" type="approve" onclick="updateStatus(this.parentNode.parentNode,<% if(admin){%>1<%}else{%>0<%}%>)">${svg.check_square}</span>`
 
     _$(`#${type} tbody`).innerHTML += TableStatus(btns, data)
   }
@@ -160,10 +174,15 @@
   function updateStatus(e, statusType) {
 
     let validateStatusType = `<% if(admin){%>1,-1<%}else{%>0<%}%>`.split(",")
-    validateStatusType = validateStatusType.map(value=>Number(value))
+    validateStatusType = validateStatusType.map(value=>{
+      let no = Number(value)
+      if(no>-2 && no<2)
+        return no
+    })
 
     // console.log(
     //   validateStatusType,
+    //   statusType,
     //   validateStatusType.includes(statusType)
     // )
 
@@ -188,46 +207,51 @@
       id: data.ID,
       status: statusType
     }).then(res => {
-      console.log("update status")
+      console.log("update status","\nid:",data.ID)
+      notification(`update status\nid:${data.ID}`)
       if (statusType === 1) addStat(data)
       else if (statusType === -1) addStatus("reject", data)
+      else if (statusType === 0) addStatus("pending", data)
       e.remove()
     })
   }
 
-  function showStat() {
+  function showStat(value) {
     let e_showSTATS = _$("[name='showSTATS']");
     (Object.values(_$("#stats").children)).forEach(child => {
       if (child.tagName == "DIV")
         hideNODES([child])
     })
-    showIDS([`#${e_showSTATS.value}`])
+    showIDS([`#${value}`])
+    let t = _$("#toggle")
+    _$('#toggle+label span').innerText = value
+    if(t.checked) t.checked = false
+    
+
   }
 
-  function updateViewState() {
+  function updateViewState(viewNo) {
     // hide all
     hideIDS(["#stats", "#reject", "#pending", "<%  if (!admin) { %>#form<% }%>"])
 
+    if(viewNo == null || undefined) viewNo = 1
 
-    if (currentViewNo === 0) {
-      currentViewNo = 1
+    if (viewNo === 0) {
       showIDS(["#pending"])
-      setText(["#view-switcher", "#info mark"], ["STATS", "Pending Requests"])
-      return
-    } else if (currentViewNo === 1) {
-      currentViewNo = -1
+      setText(["#info"], ["Pending Requests"])
+    } else if (viewNo === 1) {
       showIDS(["#stats"])
-      setText(["#view-switcher", "#info mark"], ["<%if(!admin){%>FORM<%}else{%>REJECT<%}%>", "Reports & Statistics"])
-      return
-    } else if (currentViewNo === -1) {
-      currentViewNo = parseInt(`<%if(!admin){%>2<%}else{%>0<%}%>`)
-      showIDS(["<%if(!admin){%>#form<%}else{%>#reject<%}%>"])
-      setText(["#view-switcher", "#info mark"], ["<%if(!admin){%>REJECTED<%}else{%>PENDING<%}%>", "<%if(!admin){%>Form<%}else{%>Rejected Requests<%}%>"])
-    } else if (currentViewNo === 2) {
-      currentViewNo = 0
+      setText(["#info"], ["Reports & Statistics"])
+    } else if (viewNo === -1) {
       showIDS(["#reject"])
-      setText(["#view-switcher", "#info mark"], ["PENDING", "Rejected Requests"])
+      setText(["#info"], ["Rejected Requests"])
+    } else if (viewNo === 2) {
+      showIDS(["#form"])
+      setText(["#info"], ["Form"])
     }
+
+    if(menu.classList.contains("active"))
+      toggler.click()
   }
 
   function toggleNestedTable(self) {
@@ -290,23 +314,14 @@
   }
 
   function initDashboard() {
-    currentViewNo = parseInt(`<% if (admin) { %>-1<% }else{%>-1<%}%>`)
-    // username = CookieJS.get("name") || false
+    // updateViewState(
+    //   parseInt(`
+    // <%if(admin){%> - 1 <%}else{%>2<%}%>`)
+    // )
+    updateViewState(1)
 
-    // if (!username) window.location.href = "login.html"
+    showStat("daily")
 
-    // Page.setTitle(username + " | DASHBOARD")
-    // Page.var.set("username", username)
-
-    updateViewState()
-    _$("#view-switcher").onclick = updateViewState
-
-    showStat()
-    _$("[name='showSTATS']").onchange = showStat;
-
-    // (["daily", "weekly", "monthly", "quarterly", "half_yearly", "yearly"]).forEach(id => {
-    //   _$("#" + id).innerHTML += TableHead + "<tbody></tbody>"
-    // });
     let ids = ["daily", "weekly", "monthly", "quarterly", "half_yearly", "yearly"]
     ids.forEach(id => {
       _$("#" + id).innerHTML += TableHead
@@ -315,18 +330,16 @@
 
     initSearch("#search-box input")
 
-    makeRequest("GET",`/api/<% if(admin){%>admin<%}else{%>user/<%=username%><%}%>`)
+    let api = (` / api / <% if(admin){%>admin<%}else{%>user / <%=username%><%}%>`).replaceAll(" ","")
+    makeRequest("GET",api)
     .then(response=>{
-      // console.log(JSON.parse(response))
+      
       let o = arr2obj(JSON.parse(response))
-      // console.log(o)
       for (const key in o) {
         addStat(o[key]) 
-        // console.log(key+" : ",o[key])
         }
     })
 
-    // enableFullscreen()
     // _$("#form").onsubmit = FormHandler
   }
   initDashboard()
