@@ -203,7 +203,7 @@
         "STATUS": statusType,
       }
 
-    makeRequest('POST', "http://localhost:4500/api/admin", {
+    makeRequest('POST', "/api/admin", {
       id: data.ID,
       status: statusType
     }).then(res => {
