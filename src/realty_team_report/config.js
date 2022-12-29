@@ -3,12 +3,32 @@
 const CONFIG = {
     users: {
         "infinityknight024@gmail.com": {
-            type: "admin",
+            type: "user",
             name: "SIRU"
+        },
+        "it@sahii.com": {
+            type: "admin",
+            name: "IT"
         },
         "dharm@sahii.com": {
             type: "admin",
-            name: "SIRU"
+            name: "DHARMENDAR"
+        },
+        "inam@sahii.com": {
+            type: "user",
+            name: "INAM"
+        },
+        "jyoti@sahii.com": {
+            type: "user",
+            name: "JYOTI"
+        },
+        "ahesan@sahii.com": {
+            type: "user",
+            name: "AHESAN"
+        },
+        "ruksar@sahii.com": {
+            type: "user",
+            name: "RUKSAR"
         }
     },
     cookie: {
