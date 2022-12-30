@@ -6,11 +6,12 @@
 
 html,
 body {
-    width: 96vw;
-    height: 95vh;
+    /* width: 96vw;
+    height: 95vh; */
 
     display: flex;
     flex-direction: column;
+    overflow: scroll;
 }
 
 h1 {

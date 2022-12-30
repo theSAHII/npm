@@ -6,7 +6,7 @@
 .menu__toggler {
     position: absolute;
     top: 20px;
-    right: 20px;
+    right: 2rem;
     z-index: 3;
     height: 28px;
     width: 28px;

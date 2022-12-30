@@ -233,6 +233,7 @@
   function updateViewState(viewNo) {
     // hide all
     hideIDS(["#stats", "#reject", "#pending", "<%  if (!admin) { %>#form<% }%>"])
+    showIDS(["#search-box"])
 
     if(viewNo == null || undefined) viewNo = 1
 
@@ -247,6 +248,7 @@
       setText(["#info"], ["Rejected Requests"])
     } else if (viewNo === 2) {
       showIDS(["#form"])
+      hideIDS(["#search-box"])
       setText(["#info"], ["Form"])
     }
 

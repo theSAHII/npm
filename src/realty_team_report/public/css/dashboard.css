@@ -29,7 +29,7 @@ body {
     padding: 0;
     width: 100vw !important;
     height: 100vh !important;
-    overflow-x: hidden !important;
+    /* overflow-x: hidden !important; */
     /* overflow: hidden; */
 }
 
@@ -77,7 +77,7 @@ button:hover:disabled {
 
 /* pages */
 #pages {
-    width: 100%;
+    width: 100vw;
 
     display: flex;
 
@@ -115,7 +115,7 @@ button:hover:disabled {
 
 /* stats */
 #stats {
-    width: 100% !important;
+    width: 100vw !important;
     /* height: auto; */
 
     display: flex;
@@ -123,6 +123,9 @@ button:hover:disabled {
 
     gap: 9px;
     padding: 9px 18px 0px;
+
+    position: relative;
+    overflow: scroll;
 }
 
 /* info */
