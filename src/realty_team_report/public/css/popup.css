@@ -55,7 +55,7 @@ dialog {
     width: 81%;
     max-width: 500px;
 
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     translate: -50% -50%;
